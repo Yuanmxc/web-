@@ -1,0 +1,99 @@
+syntax = "proto3";
+package order;
+option go_package = "order";
+
+message BaseResp {
+  int64 StatusCode = 1;
+  string StatusMessage = 2;
+}
+
+message Order{
+  int64 Id = 1;//销售记录ID
+  int64 UserId = 2;//买票人
+  int64 ScheduleId = 3;//演出计划ID
+  int32 SeatRow = 4;//座位行数
+  int32 SeatCol = 5;//座位列数
+  string Date = 6;//订单处理时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  int32 Value = 7;//票价
+  int32 Type = 8;//交易类型，1-买票，-1-退票，2-待支付
+}
+//用户抢到了票，创建订单，默认是买票行为
+//message AddOrderRequest{
+//  int64 UserId = 1;
+//  int64 ScheduleId = 2;//演出计划ID
+//  int32 SeatRow = 3;//座位行数
+//  int32 SeatCol = 4;//座位列数
+//  string Data = 5;//下单时间
+//  int32 Value = 6;//票价
+//}
+//message AddOrderResponse{
+//  BaseResp BaseResp = 1;
+//}
+//进行支付，确认订单
+message CommitOrderRequest{
+  int64 UserId = 1;
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+}
+message CommitOrderResponse{
+  BaseResp BaseResp = 1;
+}
+//未在规定时间内支付，默认放弃这张票，系统删除该订单
+//message DeleteOrderRequest{
+//  int64 Id = 1;
+//}
+//message DeleteOrderResponse{
+//  BaseResp BaseResp = 1;
+//}
+//修改订单（退票）
+message UpdateOrderRequest{
+  int64 UserId = 1;//退票的用户ID
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+}
+message UpdateOrderResponse{
+  BaseResp BaseResp = 1;
+}
+
+//[给用户使用]根据用户ID 获取全部订单信息
+message GetAllOrderRequest{
+  int64 UserId = 1;
+  int32 OrderType = 2;
+}
+
+message GetAllOrderResponse{
+  BaseResp BaseResp = 1;
+  repeated Order List = 2;
+}
+
+//票房
+message OrderAnalysis{
+  int64 PlayId = 1;
+  string PlayName = 2;
+  string PlayArea = 3;
+  string PlayDuration = 4;
+  string StartData = 5;//剧目开始时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  string EndData = 6;//剧目结束时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  int64 TotalTicket = 7;//总卖票数
+  int64 Sales = 8;//销售额
+  int32 Price = 9;//票价
+}
+
+message GetOrderAnalysisRequest{
+  int64 PlayId = 1;
+}
+message GetOrderAnalysisResponse{
+  BaseResp BaseResp = 1;
+  OrderAnalysis OrderAnalysis = 2;
+}
+
+service OrderService{
+  //  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse){}
+  //  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse){}
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse){}
+  rpc GetAllOrder(GetAllOrderRequest) returns (GetAllOrderResponse){}
+  rpc GetOrderAnalysis(GetOrderAnalysisRequest) returns (GetOrderAnalysisResponse){}
+  rpc CommitOrder(CommitOrderRequest) returns (CommitOrderResponse){}
+}

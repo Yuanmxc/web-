@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长乐剧院-售票</title>
+    <script src="build/classes/jquery.js"></script>
+    <link href="css1/bootstrap.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./css/slick.css" />
+    <link rel="stylesheet" href="./css/slicknav.css" />
+    <link rel="stylesheet" href="./css/animate.css" />
+    <link rel="stylesheet" href="./css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/seats.css" />
+    <style type="text/css">
+        .demo {
+            width: 800px;
+            margin: 40px auto 0 20px;
+            min-height: 450px;
+        }
+
+        @media screen and (max-width: 360px) {
+            .demo {
+                width: 340px
+            }
+        }
+
+        .front {
+            width: 200px;
+            margin: 5px 32px 45px 60px;
+            background-color: #f0f0f0;
+            color: #666;
+            text-align: center;
+            padding: 3px;
+            border-radius: 5px;
+        }
+
+        .booking-details {
+            margin-top: 35px;
+            float: right;
+            position: relative;
+            width: 220px;
+            height: 450px;
+        }
+
+        .booking-details h3 {
+            margin: 5px 5px 0 0;
+            font-size: 16px;
+        }
+
+        .booking-details p {
+            line-height: 26px;
+            font-size: 16px;
+            color: #999
+        }
+
+        .booking-details p span {
+            color: #666
+        }
+
+        div.seatCharts-cell {
+            color: #182C4E;
+            height: 25px;
+            width: 25px;
+            line-height: 25px;
+            margin: 3px;
+            float: left;
+            text-align: center;
+            outline: none;
+            font-size: 13px;
+        }
+
+        div.seatCharts-seat {
+            color: #fff;
+            cursor: pointer;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        div.seatCharts-row {
+            height: 35px;
+        }
+
+        div.seatCharts-seat.available {
+            background-color: #B9DEA0;
+        }
+
+        div.seatCharts-seat.focused {
+            background-color: #76B474;
+            border: none;
+        }
+
+        div.seatCharts-seat.selected {
+            background-color: #E6CAC4;
+        }
+
+        div.seatCharts-seat.unavailable {
+            background-color: #472B34;
+            cursor: not-allowed;
+        }
+
+        div.seatCharts-container {
+            border-right: 1px dotted #adadad;
+            width: 550px;
+            padding: 20px;
+            float: left;
+        }
+
+        div.seatCharts-legend {
+            padding-left: 0px;
+            position: absolute;
+            bottom: 16px;
+        }
+
+        ul.seatCharts-legendList {
+            padding-left: 0px;
+        }
+
+        .seatCharts-legendItem {
+            float: left;
+            width: 90px;
+            margin-top: 10px;
+            line-height: 2;
+        }
+
+        span.seatCharts-legendDescription {
+            margin-left: 5px;
+            line-height: 30px;
+        }
+
+        .checkout-button {
+            display: block;
+            width: 80px;
+            height: 24px;
+            line-height: 20px;
+            margin: 10px auto;
+            border: 1px solid #999;
+            font-size: 14px;
+            cursor: pointer
+        }
+
+        #selected-seats {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: none;
+            width: 200px;
+        }
+
+        #selected-seats li {
+            float: left;
+            width: 72px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #d3d3d3;
+            background: #5cb85c;
+            margin: 6px;
+            font-size: 14px;
+            text-align: center;
+            color: white
+        }
+    </style>
+    <style>
+        .seatBtn {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgba(12, 165, 226, 0.8);
+            color: white;
+            position: relative;
+            font-size: 1px;
+        }
+
+        .blue {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgb(12, 165, 226);
+            color: white;
+            position: relative;
+        }
+
+        .dangerBtn {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgb(228, 209, 38);
+            color: white;
+            position: relative;
+            font-size: 1px;
+        }
+
+        .yello {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgb(228, 209, 38);
+            color: white;
+            position: relative;
+        }
+
+        .sucBtn {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgb(20, 194, 46);
+            color: white;
+            position: relative;
+            font-size: 1px;
+        }
+
+        .green {
+            width: 25px;
+            height: 14px;
+            border-radius: 5px;
+            background-color: rgb(20, 194, 46);
+            color: white;
+            position: relative;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #seatmap {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .homecontainer {
+            background-color: lightsteelblue;
+            background-size: cover;
+        }
+
+        .demobox {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tablebox {
+            float: left;
+        }
+
+        .detailbox {
+            float: right;
+        }
+
+        .nav-link {
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body class="contact-template">
+    <header id="site-header">
+        <div class="homecontainer">
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active"><img src="./images/logo.png" width="50"
+                            height="5" /></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.html">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="board.html">榜单</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="sale_ticket.html">买票</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="return_ticket.html">退票</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">联系我们</a>
+                </li>
+                <li class="nav-item">
+                <li><a class="nav-link" href="login.html">登陆</a></li>
+                </li>
+                <li class="nav-item">
+                <li><a class="nav-link" href="yonghu.html">个人中心</a></li>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div>请选择剧目</div>
+    <div>
+        <select class="form-select" aria-label="Default select example" id="select">
+            <!-- <option selected >演出厅</option> -->
+        </select>
+    </div>
+    </div>
+    <div>请选择座位</div>
+    <div id="seatmap">
+        <br>
+        <div class="demobox">
+            <div class="tablebox">
+                <div class="front">银幕中央</div>
+                <table id="table">
+                </table>
+            </div class="detailbox">
+            <div>
+                <br>
+                <br>
+                <br>
+                <p>剧目：<span id="playname"></span></p>
+                <p>演出厅：<span id="studioname"></span></p>
+                <p>时间：<span id="time"></span></p>
+                <p>已选座位：</p>
+                <ul id="selected-seats">
+                </ul>
+                <p>票数：<span id="counter" style="color: red">0</span></p>
+                <p>总计：<b>￥<span id="total" style="color: red">0</span></b></p>
+                <br>
+                <button type="button" name="确认" class="btn btn-primary" id="submit-btn">确认信息</button>
+                <button type="reset" name="重置" class="btn btn-secondary" id="reset-btn">重新选座</button>
+            </div>
+        </div>
+        <div>
+
+            <a>座位状态：</a>
+            <button class="blue"></button>
+            <a>可选</a>
+            <button class="yello"></button>
+            <a>不可选</a>
+            <button class="green"></button>
+            <a>已选</a>
+        </div>
+
+
+    </div>
+    <div>
+
+        <button type="button" name="提交" id="reach-btn">前往支付</button>
+    </div>
+    <script>
+        // var Token = getCookie("token")
+        const Token = localStorage.getItem('token');
+        var studio = 1;
+        var seatnum = 0;
+        var seats = [];
+        var studioID;
+        var scheduleid = 0;
+        var sumprice = 0;
+        var play_name;
+        var studio_name;
+        var show_time;
+        //获取演出票信息
+        function getticket() {
+            $.ajax({
+                url: 'http://127.0.0.1:80/ttms/schedule/all',
+                type: 'GET',
+                data: {
+                    "Current": 1,
+                    "PageSize": 10,
+                    // "Token": getCookie("token")
+                    "Token": Token
+                },
+                headers: { "Authorization": Token },
+                success: function (res) {
+                    //alert("成功获取演出信息");
+                    console.log(res.Data.List);
+                    var rows = [];
+                    rows.push("<option selected >演出剧目</option>")
+                    $.each(res.Data.List, function (i, item) {
+                        rows.push("<option>" + "演出计划ID:" + item.Id + "&nbsp&nbsp&nbsp剧目名称:" + item.PlayName + "&nbsp&nbsp&nbsp演出厅名称:" + item.StudioName + "&nbsp&nbsp&nbsp演出票价:" + item.Price + "&nbsp&nbsp&nbsp演出时间:" + item.ShowTime + "&nbsp&nbsp&nbsp影片时长:" + item.Duration + "&nbsp&nbsp&nbsp影片地区:" + item.Area + "</option>");
+                    })
+                    $("#select").append(rows.join(''))
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown == "Unauthorized") {
+                        alert("请先登录")
+                    }
+                    if (errorThrown == "Bad Gateway") {
+                        alert("获取演出信息失败");
+                    }
+                    console.log(jqXHR.responseText);
+                }
+            });
+
+        }
+        getticket();
+        //选择剧目的点击事件
+        function getstudioval() {
+            $("#select").on("change", function () {
+                var selectedOption = $(this).val();
+                var id = selectedOption.split(':')[1].trim();
+                scheduleid = parseInt(id);
+                play_name = $(this).val().match(/ha:(.*?)\s/)[1];
+                var a = selectedOption.split(':')[3].trim();
+                studio_name = $(this).val().match(/剧目演出厅名称:(.*?)\s/)[1];
+                var b = selectedOption.split(':')[5].trim();
+                var c = selectedOption.split(':')[6].trim();
+                var d = selectedOption.split(':')[7].trim();
+                show_time = b + ":" + c + ":" + d[0] + d[1]
+                $("#playname").text(play_name)
+                $("#studioname").text(studio_name)
+                $("#time").text(show_time)
+                $('#selected-seats').empty();
+                getseat()
+            });
+        }
+        getstudioval();
+        //获取全部座位
+        function getseat() {
+            var i = 1;
+            $.ajax({
+                url: 'http://127.0.0.1:80/ttms/ticket/all',
+                type: 'GET',
+                data: {
+                    "ScheduleId": scheduleid
+                },
+                headers: { "Authorization": Token },
+                success: function (res) {
+                    //alert("成功获取全部座位");
+                    var rows = [];
+                    console.log(res);
+                    rows.push('<tr>');
+                    rows.push('<td>' + i + '</td>')
+                    for (let row = 0; row < res.List.length; row++) {
+                        if (i < res.List[row].SeatRow) {
+                            rows.push('</tr><tr>');
+                            i++;
+                            rows.push('<td>' + i + '</td>')
+                        }
+                        //alert(res.List[row].SeatCol)
+                        rows.push('<td>' + '<button type="button" class="seatBtn" data-available="1" data-price="' + res.List[row].Price + '">' + res.List[row].SeatCol + '</button>' + '<td>');
+                        if (res.List[row].SeatCol == 5) {
+                            rows.push('<td>&nbsp&nbsp&nbsp</td>')
+                        }
+                    }
+                    rows.push('</tr>');
+                    $('.seatBtn').off();
+                    $('.seatBtn').remove();
+                    $("#table").empty();
+                    $("#table").append(rows.join(''))
+                    $('.seatBtn').each(function (index, element) {
+                        $(element).attr("data-row", res.List[index].SeatRow)
+                            .attr("data-col", res.List[index].SeatCol)
+                        if (res.List[index].status == 1) {
+                            $(element).attr("data-available", "0");
+                            $(element).addClass("dangerBtn").removeClass("seatBtn").prop("disabled", true);
+                        }
+                        else if (res.List[index].status == 9) {
+                            $(element).attr("data-available", "0");
+                            $(element).addClass("dangerBtn").removeClass("seatBtn").prop("disabled", true);
+                        }
+                    });
+                    seatnum = 0;
+                    sumprice = 0;
+                    $("#total").text(sumprice)
+                    $("#counter").text(seatnum)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown == "Unauthorized") {
+                        //alert("请先登录")
+                    }
+                    if (errorThrown == "Bad Gateway") {
+                        alert("获取座位失败");
+                    }
+                    console.log(jqXHR.responseText);
+                }
+            });
+            seats.length = 0;
+        }
+        getseat();
+        //展示座位信息
+        function showseat() {
+            var shows = $('<li> row:' + seats[seatnum - 1].row + '&nbsp' + 'col:' + seats[seatnum - 1].col + '</li>')
+            $('#selected-seats').append(shows)
+        }
+        //选座的点击事件
+        function buttonClickHandler() {
+            $(document).on('click', '.seatBtn', function () {
+                var available = $(this).data("available");
+                if (available == 1) {
+                    $(this).addClass("sucBtn").removeClass("seatBtn").prop("disabled", true);
+                    seatnum++;
+                    sumprice += $(this).data("price")
+                    seats.push({ row: $(this).data("row"), col: $(this).data("col") })
+                    console.log(seats)
+                    $("#total").text(sumprice)
+                    $("#counter").text(seatnum)
+                    showseat()
+                } else {
+                    alert("座位不可用")
+                }
+            })
+        }
+        buttonClickHandler()
+        //重置点击事件
+        function resertclick() {
+            $(document).on('click', '#reset-btn', function () {
+                $('.seatBtn').off('click');
+                getseat();
+                $('#selected-seats').empty();
+                sumprice = 0;
+                seatsum = 0
+                $("#total").text(sumprice)
+                $("#counter").text(seatnum)
+            });
+        }
+        resertclick()
+        //提交信息事件
+        function submiteven() {
+            $(document).on('click', '#submit-btn', function () {
+                if (seatnum == 0) {
+                    alert("你还没有选座");
+                }
+                else {
+                    //alert("提交成功");
+                    for (let k = 0; k < seatnum; k++) {
+                        submitval(seats[k].row, seats[k].col);
+                    }
+                }
+            });
+        }
+        submiteven()
+        //提交票信息
+        function submitval(row, col) {
+            $.ajax({
+                url: 'http://127.0.0.1:80/ttms/ticket/buy',
+                type: 'POST',
+                data: {
+                    "ScheduleId": scheduleid,
+                    "SeatRow": row,
+                    "SeatCol": col
+                },
+                headers: { "Authorization": Token },
+                success: function (res) {
+                    if (res.BaseResp.StatusMessage == "success") {
+                        alert("选座成功");
+                        console.log(res)
+                    }
+                    else {
+                        alert("选座失败")
+                        console.log(res)
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (errorThrown == "Unauthorized") {
+                        //alert("请先登录")
+                    }
+                    if (errorThrown == "Bad Gateway") {
+                        alert("选座失败");
+                    }
+                    console.log(jqXHR.responseText);
+                }
+            });
+        }
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+        //前往支付
+        function reachpay() {
+            $(Document).on("click", "#reach-btn", function () {
+                // if (seatnum == 0) {
+                //     alert("你还没有选座");
+                // }
+                // else {
+                //     window.location.href = "./pay.html";
+                // }
+                window.location.href = "./pay.html";
+            })
+        }
+        reachpay()
+    </script>
+</body>
+
+</html>

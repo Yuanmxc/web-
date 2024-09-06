@@ -1,0 +1,80 @@
+syntax = "proto3";
+package ticket;
+option go_package = "ticket";
+import "studio.proto";
+message BaseResp {
+  int64 StatusCode = 1;
+  string StatusMessage = 2;
+}
+
+message Ticket{
+  int64 Id = 1;
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+  int32 Price = 5;//价格
+  string PlayName = 6;//剧目名称
+  int64 StudioId = 7;//对应的演出厅ID
+  int32 status = 8;//0-待售（未被预定），1-已售（已付款），9-预留（已预订，还未付款）
+}
+//批量生成票（提供给演出计划模块使用，不允许从外界直接调用）
+message BatchAddTicketRequest{
+  int64 ScheduleId = 1;//演出计划ID
+  int64 StudioId = 2;//对应的演出厅ID
+  int32 Price = 3;//价格
+  string PlayName = 4;//剧目名称
+  repeated studio.Seat List = 6;
+}
+message BatchAddTicketResponse{
+  BaseResp BaseResp = 1;
+}
+
+//修改票状态（不允许外界直接更改status）
+message UpdateTicketRequest{
+  int64 ScheduleId = 1;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+  int32 Price = 5;//价格
+  int32 status = 6;//0-待售（未被预定），1-已售（已付款），9-预留（已预订，还未付款）
+}
+message UpdateTicketResponse{
+  BaseResp BaseResp = 1;
+}
+//根据演出计划获取所有票
+message GetAllTicketRequest{
+  int64 ScheduleId = 1;//演出计划ID
+}
+message GetAllTicketResponse{
+  BaseResp BaseResp = 1;
+  repeated Ticket List = 2;
+}
+
+//买票
+message BuyTicketRequest{
+  int64 ScheduleId = 1;//演出计划ID
+  int32 SeatRow = 2;//座位行数
+  int32 SeatCol = 3;//座位列数
+  int64 UserId = 4;//买票的用户ID
+}
+message BuyTicketResponse{
+  BaseResp BaseResp = 1;
+}
+
+//退票
+message ReturnTicketRequest{
+  int64 UserId = 1;//退票的用户ID
+  int64 ScheduleId = 2;//演出计划ID
+  int32 SeatRow = 3;//座位行数
+  int32 SeatCol = 4;//座位列数
+}
+message ReturnTicketResponse{
+  BaseResp BaseResp = 1;
+}
+
+service TicketService{
+  rpc BatchAddTicket(BatchAddTicketRequest)returns (BatchAddTicketResponse){}
+  rpc UpdateTicket(UpdateTicketRequest)returns (UpdateTicketResponse){}
+  rpc GetAllTicket(GetAllTicketRequest)returns (GetAllTicketResponse){}
+  rpc BuyTicket(BuyTicketRequest)returns (BuyTicketResponse){}
+  rpc ReturnTicket(ReturnTicketRequest)returns (ReturnTicketResponse){}
+}

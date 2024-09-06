@@ -1,0 +1,132 @@
+syntax = "proto3";
+package studio;
+option go_package = "studio";
+
+message BaseResp {
+  int64 StatusCode = 1;
+  string StatusMessage = 2;
+}
+message Studio {
+  int64 Id = 1;
+  string Name = 2;
+  int64 RowsCount = 3;
+  int64 ColsCount = 4;
+  int64 SeatsCount = 5;
+}
+//添加演出厅
+message AddStudioRequest{
+  string Name = 1;
+  int64 RowsCount = 2;
+  int64 ColsCount = 3;
+}
+message AddStudioResponse{
+  BaseResp BaseResp = 1;
+}
+
+//分页获取演出厅信息
+message GetAllStudioRequest{
+  int32 Current = 1;//当前页
+  int32 PageSize = 2; //一页数据条数
+}
+message GetAllStudioResponseData{
+  int64 Total = 1;
+  repeated Studio List = 2;
+}
+message GetAllStudioResponse{
+  BaseResp BaseResp = 1;
+  GetAllStudioResponseData Data = 2;
+}
+
+//获取z指定演出厅信息
+message GetStudioRequest{
+  int64 Id = 1;
+}
+message GetStudioResponse{
+  BaseResp BaseResp = 1;
+  Studio result = 2;
+}
+//修改指定演出厅
+message UpdateStudioRequest{
+  int64 Id = 1;
+  int64 RowsCount = 2;
+  int64 ColsCount = 3;
+  string Name = 4;
+}
+message UpdateStudioResponse{
+  BaseResp BaseResp = 1;
+}
+
+//删除指定演出厅
+message DeleteStudioRequest{
+  int64 Id = 1;
+}
+message DeleteStudioResponse{
+  BaseResp BaseResp = 1;
+}
+
+message Seat{
+  int64 Id = 1;
+  int64 StudioId = 2; //座位所在的演出厅ID
+  int64 Row = 3;
+  int64 Col = 4;
+  int64 Status = 5;//0-不是座位，1-有座位，9-损坏的座位
+}
+//添加指定座位
+message AddSeatRequest{
+  int64 StudioId = 1;
+  int64 Row = 2;
+  int64 Col = 3;
+  int64 Status = 4;//0-不是座位，1-有座位，9-损坏的座位
+}
+message AddSeatResponse{
+  BaseResp BaseResp = 1;
+}
+
+//分页获取座位信息
+message GetAllSeatRequest{
+  int64 StudioId = 1;
+  int32 Current = 2;//当前页
+  int32 PageSize = 3; //一页数据条数
+}
+message GetAllSeatResponseData{
+  int64 Total = 1;
+  repeated Seat List = 2;
+}
+message GetAllSeatResponse{
+  BaseResp BaseResp = 1;
+  GetAllSeatResponseData Data = 2;
+}
+
+//修改指定座位
+message UpdateSeatRequest{
+  int64 StudioId = 1;
+  int64 Row = 2;
+  int64 Col = 3;
+  int64 Status = 4; //修改后座位的新状态
+}
+message UpdateSeatResponse{
+  BaseResp BaseResp = 1;
+}
+
+//删除指定座位
+message DeleteSeatRequest{
+  int64 StudioId = 1;
+  int64 Row = 2;
+  int64 Col = 3;
+}
+message DeleteSeatResponse{
+  BaseResp BaseResp = 1;
+}
+
+
+service StudioService{
+  rpc AddStudio(AddStudioRequest)returns (AddStudioResponse){}
+  rpc GetAllStudio(GetAllStudioRequest)returns (GetAllStudioResponse){}
+  rpc UpdateStudio(UpdateStudioRequest)returns (UpdateStudioResponse){}
+  rpc DeleteStudio(DeleteStudioRequest)returns (DeleteStudioResponse){}
+  rpc AddSeat(AddSeatRequest)returns (AddSeatResponse){}
+  rpc GetAllSeat(GetAllSeatRequest)returns (GetAllSeatResponse){}
+  rpc UpdateSeat(UpdateSeatRequest)returns (UpdateSeatResponse){}
+  rpc DeleteSeat(DeleteSeatRequest)returns (DeleteSeatResponse){}
+  rpc GetStudio(GetStudioRequest)returns (GetStudioResponse){}
+}

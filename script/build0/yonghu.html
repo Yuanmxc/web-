@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f6f6f6;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .user-info h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .user-info a {
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px dotted #333;
+        }
+
+        .user-info a:hover {
+            color: #0080ff;
+            border-bottom: 1px dotted #0080ff;
+        }
+
+        .user-info .description {
+            font-size: 18px;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            background-color: #f6f6f6;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+        }
+
+        .nav-link {
+            font-size: 20px;
+        }
+
+        .homecontainer {
+            background-color: lightsteelblue;
+            background-size: cover;
+        }
+    </style>
+    <link href="css1/bootstrap.css" rel="stylesheet" type="text/css">
+    <script src="build/classes/jquery.js"></script>
+</head>
+
+<body>
+    <header id="site-header">
+        <div class="homecontainer">
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active"><img src="./images/logo.png" width="50"
+                            height="50" /></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.html">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="board.html">榜单</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="sale_ticket.html">买票</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="return_ticket.html">退票</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">联系我们</a>
+                </li>
+                <li class="nav-item">
+                <li><a class="nav-link" href="login.html">登陆</a></li>
+                </li>
+                <li class="nav-item">
+                <li><a class="nav-link" href="yonghu.html">个人中心</a></li>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <div class="avatar">
+            <img src="./images/user.jpg">
+        </div>
+        <div class="user-info">
+            <h1 id="name"></h1>
+            <p id="id"></p>
+            <p id="type"></p>
+            <a href="bangyou.html">
+                <button class="btn btn-info">绑定邮箱</button>
+            </a>
+            <br>
+            <a href="xiu.html">
+                <button class="btn btn-info">修改密码</button>
+            </a>
+        </div>
+    </div>
+    <script>
+        const Token = localStorage.getItem('token');
+        function submityonghu() {
+            $.ajax({
+                url: 'http://127.0.0.1:80/ttms/user/info',
+                type: "GET",
+                headers: {
+                    "Authorization": Token
+                },
+                success: function (res) {
+                    console.log(res)
+                    $("#id").text("用户ID：" + res.User.Id)
+                    $("#type").text("用户类型：" + res.User.Type)
+                    $("#name").text("用户名：" + res.User.Name)
+                },
+                error: function () {
+                    alert("获取用户信息成功")
+                }
+            })
+
+        }
+        submityonghu()
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+    </script>
+</body>
+
+</html>

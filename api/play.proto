@@ -1,0 +1,154 @@
+syntax = "proto3";
+package play;
+option go_package = "play";
+
+message BaseResp {
+  int64 StatusCode = 1;
+  string StatusMessage = 2;
+}
+message Play{//剧目
+  int64 Id = 1;
+  string Name = 2;
+  uint32 Type = 3;//1-file 2-opear 3-音乐会
+  string Area = 4;//剧目出品地区
+  uint32 Rating = 5;//剧目等级 1-儿童 2-青年 3-成年
+  string Duration = 6;//时长 如：3h30m30s ^([0-9]+h)?([0-9]+m)?([0-9]+s)?$
+  string StartDate = 7;//剧目开始时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  string EndDate = 8;//剧目结束时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  int64 Price = 9;
+}
+message AddPlayRequest{
+  string Name = 1;
+  uint32 Type = 2;//1-file 2-opear 3-音乐会
+  string Area = 3;//剧目出品地区
+  uint32 Rating = 4;//剧目等级 1-儿童 2-青年 3-成年
+  string Duration = 5;//时长 如：3h30m30s
+  string StartDate = 6;//剧目开始时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  string EndDate = 7;//剧目结束时间 按照示例格式：2006-01-02 15:04:05（\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}）
+  int64 Price = 8;
+}
+message AddPlayResponse{
+  BaseResp BaseResp = 1;
+}
+
+message UpdatePlayRequest{
+  int64 Id = 1;
+  string Name = 2;
+  uint32 Type = 3;//1-file 2-opear 3-音乐会
+  string Area = 4;//剧目出品地区
+  uint32 Rating = 5;//剧目等级 1-儿童 2-青年 3-成年
+  string Duration = 6;//时长 如：3h30m30s
+  string StartDate = 7;//剧目开始时间 按照示例格式：2006-01-02（\d{4}-\d{2}-\d{2}）
+  string EndDate = 8;//剧目结束时间 按照示例格式：2006-01-02（\d{4}-\d{2}-\d{2}）
+  int64 Price = 9;
+}
+message UpdatePlayResponse{
+  BaseResp BaseResp = 1;
+}
+
+message DeletePlayRequest{
+  int64 Id = 1;
+}
+message DeletePlayResponse{
+  BaseResp BaseResp = 1;
+}
+
+message PlayToScheduleRequest{
+  int64 Id = 1;
+}
+message PlayToScheduleResponse{
+  BaseResp BaseResp = 1;
+  Play Play = 2;
+  repeated int64 ScheduleList = 3;
+}
+
+message GetAllPlayRequest{
+  int32 Current = 1;//当前页
+  int32 PageSize = 2; //一页数据条数
+}
+message GetAllPlayResponseData{
+  int64 Total = 1;
+  repeated Play List = 2;
+}
+message GetAllPlayResponse{
+  BaseResp BaseResp = 1;
+  GetAllPlayResponseData Data = 2;
+}
+//每创建一个演出计划，就要立即生成对应的演出票（就像创建演出厅时自动生成座位一样）
+message Schedule{//演出计划
+  int64 Id = 1;
+  int64 PlayId = 2;//对应的剧目ID
+  int64 StudioId = 3;//对应的演出厅ID
+  string ShowTime = 4;//放映时间 按照示例格式：2006-01-02 15:04:05
+}
+
+message AddScheduleRequest{
+  int64 PlayId = 1;//对应的剧目ID
+  int64 StudioId = 2;//对应的演出厅ID
+  string ShowTime = 3;//放映时间 按照示例格式：2006-01-02 15:04:05
+}
+message AddScheduleResponse{
+  BaseResp BaseResp = 1;
+}
+
+message UpdateScheduleRequest{
+  int64 Id = 1;
+  int64 PlayId = 2;//对应的剧目ID
+  int64 StudioId = 3;//对应的演出厅ID
+  string ShowTime = 4;//放映时间 按照示例格式：2006-01-02 15:04:05
+}
+message UpdateScheduleResponse{
+  BaseResp BaseResp = 1;
+}
+
+message DeleteScheduleRequest{
+  int64 Id = 1;
+}
+message DeleteScheduleResponse{
+  BaseResp BaseResp = 1;
+}
+
+message GetScheduleRequest{
+  int64 Id = 1;
+}
+message GetScheduleResponse{
+  BaseResp BaseResp = 1;
+  Schedule Schedule = 2;
+}
+
+
+message GetAllScheduleRequest{
+  int32 Current = 1;//当前页
+  int32 PageSize = 2; //一页数据条数
+}
+message Result{
+  int64 Id = 1;//演出计划ID
+  string PlayName = 2;//剧目名称
+  string Area = 3;//剧目出品地区
+  uint32 Rating = 4;//剧目等级 1-儿童 2-青年 3-成年
+  string Duration = 5;//时长 如：3h30m30s ^([0-9]+h)?([0-9]+m)?([0-9]+s)?$
+  string ShowTime = 6;//放映时间 按照示例格式：2006-01-02 15:04:05
+  int64 Price = 7;//票价
+  string StudioName = 8;//演出厅名称
+}
+message GetAllScheduleResponseData{
+  int64 Total = 1;
+  repeated Result List = 2;
+}
+message GetAllScheduleResponse{
+  BaseResp BaseResp = 1;
+  GetAllScheduleResponseData Data = 2;
+}
+
+service PlayService{
+  rpc AddPlay(AddPlayRequest) returns (AddPlayResponse){}
+  rpc UpdatePlay(UpdatePlayRequest) returns (UpdatePlayResponse){}
+  rpc DeletePlay(DeletePlayRequest) returns (DeletePlayResponse){}
+  rpc GetAllPlay(GetAllPlayRequest) returns (GetAllPlayResponse){}
+  rpc AddSchedule(AddScheduleRequest) returns (AddScheduleResponse){}
+  rpc UpdateSchedule(UpdateScheduleRequest) returns (UpdateScheduleResponse){}
+  rpc DeleteSchedule(DeleteScheduleRequest) returns (DeleteScheduleResponse){}
+  rpc GetAllSchedule(GetAllScheduleRequest) returns (GetAllScheduleResponse){}
+  rpc PlayToSchedule(PlayToScheduleRequest) returns (PlayToScheduleResponse){}
+  rpc GetSchedule(GetScheduleRequest) returns (GetScheduleResponse){}
+}

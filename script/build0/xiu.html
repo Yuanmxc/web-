@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" type="text/css"
+        href="file://C:\Users\67325.000\Desktop\bootstrap-3.4.1-dist\css\bootstrap.min.css">
+    <script src="file://C:\Users\67325.000\Desktop\bootstrap-3.4.1-dist\js\bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="build/classes/jquery.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            background: lightsteelblue;
+        }
+
+        input[type='checkbox'] {
+            display: none;
+        }
+
+        #display:checked~.container {
+            display: block;
+        }
+
+        .container {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: whitesmoke;
+            width: 350px;
+            height: 500px;
+            padding: 30px;
+            position: absolute;
+            border-radius: 15px;
+            opacity: 70%;
+        }
+
+        h1 {
+            background: none;
+            text-align: center;
+            margin-top: 5px;
+            color: black;
+
+        }
+
+        form {
+            background: none;
+        }
+
+        label {
+            background: none;
+            color: black;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        input {
+            background: none;
+            display: block;
+            width: 90%;
+            font-size: 20px;
+            border: none;
+            outline: none;
+            border-bottom: 2px solid black;
+            padding: 10px
+        }
+
+        input.but {
+            display: block;
+            margin-top: 20px;
+            width: 95%;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 10px;
+            background: black;
+            border: none;
+            outline: none;
+            padding: 10px;
+            transition: 0.3s;
+        }
+
+        input.but:hover {
+            background: lightseagreen;
+        }
+    </style>
+</head>
+
+<body>
+    <!--<div id="div104">
+    <div id="div1041">
+    <form  action="http://116.204.90.27:80/ttms/user/change" id="change-form">
+        <label for="userID">用户ID</label><input type="text" id="userID" required><br>
+        <label for="pw">密码：</label><input type="password" id="pw" required><br>
+        <label for="pw2">新密码：</label><input type="password" id="pw2" required><br>
+        <input class="but" type="submit" value="提交">
+    </form>
+    </div>
+</div>
+<div id="div000"></div>
+<div id="div001"></div>
+-->
+    <div class="container">
+
+        <h1>修改密码</h1>
+        <form action="http://127.0.0.1:80/ttms/user/change" id="change-form" method="post">
+            <label for="pw">密码</label>
+            <input type="password" id="pw" required>
+            <label for="pw2">新密码</label>
+            <input type="password" id="pw2" required>
+            <input class="but" type="submit" value="提交">
+        </form>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#change-form').submit(function (e) {
+                e.preventDefault();
+
+                const pw = $('#pw').val();
+                const pw2 = $('#pw2').val();
+                const Token = localStorage.getItem('token');
+                $.ajax({
+                    url: 'http://127.0.0.1:80/ttms/user/change',
+                    type: "POST",
+                    headers: {
+                        "Authorization": Token
+                    },
+                    data: {
+                        "Password": pw,
+                        "NewPassword": pw2,
+                    },
+                    success: function (res) {
+                        if (res.BaseResp.StatusMessage === "success") {
+                            alert("修改成功")
+                            window.location.href = 'index.html'
+                        }
+                        else {
+                            alert(res.BaseResp.StatusMessage)
+                        }
+                    },
+                    error: function () {
+                        alert(res.BaseResp.StatusMessage)
+                    }
+                })
+            })
+        })
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+    </script>
+</body>
+
+</html>

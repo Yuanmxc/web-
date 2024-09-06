@@ -1,0 +1,3086 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "TTMS",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "studio"
+    },
+    {
+      "name": "seat"
+    },
+    {
+      "name": "play"
+    },
+    {
+      "name": "schedule"
+    },
+    {
+      "name": "ticket"
+    },
+    {
+      "name": "order"
+    }
+  ],
+  "paths": {
+    "/ttms/user/create": {
+      "post": {
+        "summary": "创建用户",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "testing",
+        "deprecated": false,
+        "description": "（最终为系统管理员专属权限）创建重名用户时，可以创建，但是会返回警告信息",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "作为用户注册时不需要Token",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Type": {
+                    "type": "integer"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string",
+                    "description": "创建时可选，之后需要绑定"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Type",
+                  "Name",
+                  "Password",
+                  "Email"
+                ],
+                "required": [
+                  "Type",
+                  "Name",
+                  "Password"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "user_type": 23,
+                "user_name": "郝娜",
+                "password": "aliqua"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "UserId": {
+                      "type": "integer"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "UserId"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "UserId"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68339624-run"
+      }
+    },
+    "/ttms/user/login": {
+      "post": {
+        "summary": "登录",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "testing",
+        "deprecated": false,
+        "description": "但其实用ID登陆不太合理，因为这个ID是后端数据库中的id，不是用户自己设定的，用户可以忘记密码，那就当然可以忘记ID。\n用邮箱和密码登陆才是合适的。",
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UserId": {
+                    "type": "integer"
+                  },
+                  "Password": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "UserId",
+                  "Password"
+                ],
+                "required": [
+                  "UserId",
+                  "Password"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "Token": {
+                      "type": "string"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "Token"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "Token"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68562308-run"
+      }
+    },
+    "/ttms/user/all": {
+      "get": {
+        "summary": "获取全部用户",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "testing",
+        "deprecated": false,
+        "description": "之后可以限定只给管理员开放",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Current",
+            "in": "query",
+            "description": "当前页 ,从1开始",
+            "required": false,
+            "example": "0",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "一页数据条数",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User",
+                        "description": "返回的用户列表"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68569501-run"
+      }
+    },
+    "/ttms/user/change": {
+      "post": {
+        "summary": "修改密码",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "testing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Password": {
+                    "type": "string"
+                  },
+                  "NewPassword": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Password",
+                  "NewPassword"
+                ],
+                "required": [
+                  "Password",
+                  "NewPassword"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68572072-run"
+      }
+    },
+    "/ttms/user/delete": {
+      "post": {
+        "summary": "删除用户",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "（最终为系统管理员或经理专属权限）",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UserId": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "UserId"
+                ],
+                "required": [
+                  "UserId"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68574342-run"
+      }
+    },
+    "/ttms/user/info": {
+      "get": {
+        "summary": "获取本用户信息",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "testing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "User": {
+                      "$ref": "#/components/schemas/User",
+                      "description": "返回的用户列表"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "User"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "User"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-68575587-run"
+      }
+    },
+    "/ttms/studio/add": {
+      "post": {
+        "summary": "添加演出厅",
+        "x-apifox-folder": "studio",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "RowsCount": {
+                    "type": "integer"
+                  },
+                  "ColsCount": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Name",
+                  "RowsCount",
+                  "ColsCount"
+                ],
+                "required": [
+                  "Name",
+                  "RowsCount",
+                  "ColsCount"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "Name": "001",
+                "RowsCount": "10",
+                "ColsCount": "10"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69309970-run"
+      }
+    },
+    "/ttms/studio/all": {
+      "get": {
+        "summary": "获取全部演出厅",
+        "x-apifox-folder": "studio",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "Current",
+            "in": "query",
+            "description": "当前页,从1开始",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "一页数据条数",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Studio"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310433-run"
+      }
+    },
+    "/ttms/studio/update": {
+      "post": {
+        "summary": "修改指定演出厅",
+        "x-apifox-folder": "studio",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  },
+                  "RowsCount": {
+                    "type": "integer"
+                  },
+                  "ColsCount": {
+                    "type": "integer"
+                  },
+                  "Name": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id",
+                  "RowsCount",
+                  "ColsCount",
+                  "Name"
+                ],
+                "required": [
+                  "Id",
+                  "RowsCount",
+                  "ColsCount",
+                  "Name"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310556-run"
+      }
+    },
+    "/ttms/studio/delete": {
+      "post": {
+        "summary": "删除指定演出厅",
+        "x-apifox-folder": "studio",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id"
+                ],
+                "required": [
+                  "Id"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310587-run"
+      }
+    },
+    "/ttms/seat/add": {
+      "post": {
+        "summary": "添加指定座位",
+        "x-apifox-folder": "seat",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "seat"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "StudioId": {
+                    "type": "integer"
+                  },
+                  "Row": {
+                    "type": "integer"
+                  },
+                  "Col": {
+                    "type": "integer"
+                  },
+                  "Status": {
+                    "type": "integer",
+                    "description": "0-不是座位，1-有座位，9-损坏的座位"
+                  }
+                },
+                "x-apifox-orders": [
+                  "StudioId",
+                  "Row",
+                  "Col",
+                  "Status"
+                ],
+                "required": [
+                  "StudioId",
+                  "Row",
+                  "Col",
+                  "Status"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310763-run"
+      }
+    },
+    "/ttms/seat/update": {
+      "post": {
+        "summary": "修改指定座位",
+        "x-apifox-folder": "seat",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "seat"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "StudioId": {
+                    "type": "integer"
+                  },
+                  "Row": {
+                    "type": "integer"
+                  },
+                  "Col": {
+                    "type": "integer"
+                  },
+                  "Status": {
+                    "type": "integer",
+                    "description": "修改后座位的新状态"
+                  }
+                },
+                "x-apifox-orders": [
+                  "StudioId",
+                  "Row",
+                  "Col",
+                  "Status"
+                ],
+                "required": [
+                  "StudioId",
+                  "Row",
+                  "Col",
+                  "Status"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310833-run"
+      }
+    },
+    "/ttms/seat/delete": {
+      "post": {
+        "summary": "删除指定座位",
+        "x-apifox-folder": "seat",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "seat"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "StudioId": {
+                    "type": "integer"
+                  },
+                  "Row": {
+                    "type": "integer"
+                  },
+                  "Col": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "StudioId",
+                  "Row",
+                  "Col"
+                ],
+                "required": [
+                  "StudioId",
+                  "Row",
+                  "Col"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310850-run"
+      }
+    },
+    "/ttms/seat/all": {
+      "get": {
+        "summary": "获取全部座位",
+        "x-apifox-folder": "seat",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "seat"
+        ],
+        "parameters": [
+          {
+            "name": "StudioId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Current",
+            "in": "query",
+            "description": "当前页",
+            "required": false,
+            "example": "0",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "一页数据条数",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Seat"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-69310917-run"
+      }
+    },
+    "/ttms/user/verify": {
+      "post": {
+        "summary": "发送邮箱验证码",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Email": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Email"
+                ],
+                "required": [
+                  "Email"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70831277-run"
+      }
+    },
+    "/ttms/user/bind": {
+      "post": {
+        "summary": "绑定邮箱",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Verification": {
+                    "type": "string",
+                    "description": "六位验证码"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Email",
+                  "Verification"
+                ],
+                "required": [
+                  "Email",
+                  "Verification"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "Email": "3390142252@qq.com",
+                "Verification": "000000",
+                "Token": "ad adipisicing minim nostrud Lorem"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70841041-run"
+      }
+    },
+    "/ttms/user/forget": {
+      "post": {
+        "summary": "忘记密码",
+        "x-apifox-folder": "user",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "忘记密码时通过之前绑定的邮箱发送验证码进行找回",
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Email": {
+                    "type": "string"
+                  },
+                  "Verification": {
+                    "type": "string",
+                    "description": "邮箱验证码"
+                  },
+                  "NewPassword": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Email",
+                  "Verification",
+                  "NewPassword"
+                ],
+                "required": [
+                  "Email",
+                  "Verification",
+                  "NewPassword"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "UserId": 1,
+                "Verification": "111111",
+                "NewPassword": "z33"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70866323-run"
+      }
+    },
+    "/ttms/play/add": {
+      "post": {
+        "summary": "添加剧目",
+        "x-apifox-folder": "play",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "play"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "integer",
+                    "description": "1-file 2-opear 3-音乐会"
+                  },
+                  "Area": {
+                    "type": "string"
+                  },
+                  "Rating": {
+                    "type": "integer",
+                    "description": "剧目等级 1-儿童 2-青年 3-成年"
+                  },
+                  "Duration": {
+                    "type": "string",
+                    "description": "如：3h30m30s"
+                  },
+                  "StartDate": {
+                    "type": "string",
+                    "description": "示例格式：2006-01-02"
+                  },
+                  "EndDate": {
+                    "type": "string",
+                    "description": "示例格式：2006-01-02"
+                  },
+                  "Price": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Name",
+                  "Type",
+                  "Area",
+                  "Rating",
+                  "Duration",
+                  "StartDate",
+                  "EndDate",
+                  "Price"
+                ],
+                "required": [
+                  "Name",
+                  "Type",
+                  "Area",
+                  "Rating",
+                  "Duration",
+                  "StartDate",
+                  "EndDate",
+                  "Price"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "Name": "001",
+                "Type": 1,
+                "Area": "china",
+                "Rating": 1,
+                "Duration": "2h30m10s",
+                "StartData": "2006-01-02",
+                "EndData": "2016-01-02",
+                "Price": 100,
+                "Token": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70899458-run"
+      }
+    },
+    "/ttms/play/update": {
+      "post": {
+        "summary": "修改剧目",
+        "x-apifox-folder": "play",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "play"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "integer",
+                    "description": "1-file 2-opear 3-音乐会"
+                  },
+                  "Area": {
+                    "type": "string"
+                  },
+                  "Rating": {
+                    "type": "integer",
+                    "description": "剧目等级 1-儿童 2-青年 3-成年"
+                  },
+                  "Duration": {
+                    "type": "string",
+                    "description": "如：3h30m30s"
+                  },
+                  "StartDate": {
+                    "type": "string",
+                    "description": "示例格式：2006-01-02"
+                  },
+                  "EndDate": {
+                    "type": "string",
+                    "description": "示例格式：2006-01-02"
+                  },
+                  "Price": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id",
+                  "Name",
+                  "Type",
+                  "Area",
+                  "Rating",
+                  "Duration",
+                  "StartDate",
+                  "EndDate",
+                  "Price"
+                ],
+                "required": [
+                  "Name",
+                  "Type",
+                  "Area",
+                  "Rating",
+                  "Duration",
+                  "StartDate",
+                  "EndDate",
+                  "Price",
+                  "Id"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "Name": "001",
+                "Type": 1,
+                "Area": "china",
+                "Rating": 1,
+                "Price": 99,
+                "Token": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70899934-run"
+      }
+    },
+    "/ttms/play/delete": {
+      "post": {
+        "summary": "删除剧目",
+        "x-apifox-folder": "play",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "play"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id"
+                ],
+                "required": [
+                  "Id"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70900014-run"
+      }
+    },
+    "/ttms/play/all": {
+      "get": {
+        "summary": "获取全部剧目",
+        "x-apifox-folder": "play",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "play"
+        ],
+        "parameters": [
+          {
+            "name": "Current",
+            "in": "query",
+            "description": "当前页,从1开始",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "一页数据条数",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "x-apifox-ignore-properties": [],
+                "x-apifox-orders": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Play"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70900434-run"
+      }
+    },
+    "/ttms/schedule/add": {
+      "post": {
+        "summary": "添加演出计划",
+        "x-apifox-folder": "schedule",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "每创建一个演出计划，就要立即生成对应的演出票（就像创建演出厅时自动生成座位一样）",
+        "tags": [
+          "schedule"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "PlayId": {
+                    "type": "integer"
+                  },
+                  "StudioId": {
+                    "type": "integer"
+                  },
+                  "ShowTime": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "PlayId",
+                  "StudioId",
+                  "ShowTime"
+                ],
+                "required": [
+                  "PlayId",
+                  "StudioId",
+                  "ShowTime"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "PlayId": 1,
+                "StudioId": 1,
+                "ShowTime": "2010-06-23 14:04:35",
+                "Token": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70904002-run"
+      }
+    },
+    "/ttms/schedule/update": {
+      "post": {
+        "summary": "修改演出计划",
+        "x-apifox-folder": "schedule",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "schedule"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  },
+                  "PlayId": {
+                    "type": "integer"
+                  },
+                  "StudioId": {
+                    "type": "integer"
+                  },
+                  "ShowTime": {
+                    "type": "string"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id",
+                  "PlayId",
+                  "StudioId",
+                  "ShowTime"
+                ],
+                "required": [
+                  "PlayId",
+                  "StudioId",
+                  "ShowTime",
+                  "Id"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "SeatCount": 10,
+                "Token": "mollit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70904791-run"
+      }
+    },
+    "/ttms/schedule/all": {
+      "get": {
+        "summary": "获取全部演出计划",
+        "x-apifox-folder": "schedule",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "schedule"
+        ],
+        "parameters": [
+          {
+            "name": "Current",
+            "in": "query",
+            "description": "当前页,从1开始",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "description": "一页数据条数",
+            "required": false,
+            "example": "10",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Token",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIlVzZXJUeXBlIjoxLCJleHAiOjE2ODA3MTk0NDgsImlzcyI6ImthbmduaW5nIn0.u1VfyoH-gYbpFhuY-apDZ624ad_69ExYp7k_NoDGuHM",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "x-apifox-ignore-properties": [],
+                "x-apifox-orders": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Schedule"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70904798-run"
+      }
+    },
+    "/ttms/schedule/delete": {
+      "post": {
+        "summary": "删除演出计划",
+        "x-apifox-folder": "schedule",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "schedule"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "Id"
+                ],
+                "required": [
+                  "Id"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-70905233-run"
+      }
+    },
+    "/ttms/studio/info": {
+      "get": {
+        "summary": "获取单个演出厅信息",
+        "x-apifox-folder": "studio",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "studio"
+        ],
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-71490299-run"
+      }
+    },
+    "/ttms/ticket/all": {
+      "get": {
+        "summary": "根据演出计划获取所有票",
+        "x-apifox-folder": "ticket",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "ticket"
+        ],
+        "parameters": [
+          {
+            "name": "ScheduleId",
+            "in": "query",
+            "description": "演出计划ID",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "List": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "List"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-73404202-run"
+      }
+    },
+    "/ttms/ticket/buy": {
+      "post": {
+        "summary": "买票",
+        "x-apifox-folder": "ticket",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "ticket"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ScheduleId": {
+                    "type": "integer"
+                  },
+                  "SeatRow": {
+                    "type": "integer"
+                  },
+                  "SeatCol": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "required": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-73663292-run"
+      }
+    },
+    "/ttms/ticket/return": {
+      "post": {
+        "summary": "退票",
+        "x-apifox-folder": "ticket",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "ticket"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ScheduleId": {
+                    "type": "integer"
+                  },
+                  "SeatRow": {
+                    "type": "integer"
+                  },
+                  "SeatCol": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "required": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-73664807-run"
+      }
+    },
+    "/ttms/order/commit": {
+      "post": {
+        "summary": "确认支付",
+        "x-apifox-folder": "order",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ScheduleId": {
+                    "type": "integer"
+                  },
+                  "SeatRow": {
+                    "type": "integer"
+                  },
+                  "SeatCol": {
+                    "type": "integer"
+                  }
+                },
+                "x-apifox-orders": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "required": [
+                  "ScheduleId",
+                  "SeatRow",
+                  "SeatCol"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "UserId": 15,
+                "ScheduleId": 11,
+                "SeatRow": 1,
+                "SeatCol": 1,
+                "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MTUsIlVzZXJUeXBlIjoxLCJleHAiOjI0MDA4NjcyOTcsImlzcyI6ImthbmduaW5nIn0.TyEkYcxhbRVgH5XoZK_llNpB2m2IdIaqBGEUBTxQoCA"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-74690683-run"
+      }
+    },
+    "/ttms/order/all": {
+      "get": {
+        "summary": "获取用户全部订单",
+        "x-apifox-folder": "order",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "name": "OrderType",
+            "in": "query",
+            "description": "0-全部订单，2-待支付订单",
+            "required": true,
+            "example": "0",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp"
+                  ],
+                  "required": [
+                    "BaseResp"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-74708234-run"
+      }
+    },
+    "/ttms/order/analysis": {
+      "get": {
+        "summary": "统计票房",
+        "x-apifox-folder": "order",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "order"
+        ],
+        "parameters": [
+          {
+            "name": "PlayId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "2",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlclR5cGUiOjAsImV4cCI6MjQwNDk0NjMyNCwiaXNzIjoia2FuZ25pbmcifQ.lEtdFz2T1Eh8C9h4r3jM6GpsozzEcy3hpU5_uALGht8",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "BaseResp": {
+                      "$ref": "#/components/schemas/BaseResp"
+                    },
+                    "OrderAnalysis": {
+                      "$ref": "#/components/schemas/Analysis"
+                    }
+                  },
+                  "x-apifox-orders": [
+                    "BaseResp",
+                    "OrderAnalysis"
+                  ],
+                  "required": [
+                    "BaseResp",
+                    "OrderAnalysis"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-74714927-run"
+      }
+    },
+    "/api/message-service/v1/message/send": {
+      "post": {
+        "summary": "message Copy",
+        "x-apifox-folder": "",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "x-apifox-ignore-properties": [],
+                "x-apifox-orders": []
+              },
+              "example": {
+                "templateId": "1",
+                "sourceId": "100001",
+                "msgType": 0,
+                "receiver": "15601166692",
+                "paramList": [
+                  "183726"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/2437412/apis/api-107671702-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Analysis": {
+        "type": "object",
+        "properties": {
+          "PlayId": {
+            "type": "integer"
+          },
+          "PlayName": {
+            "type": "string"
+          },
+          "PlayArea": {
+            "type": "string"
+          },
+          "PlayDuration": {
+            "type": "string"
+          },
+          "StartData": {
+            "type": "string"
+          },
+          "EndData": {
+            "type": "string"
+          },
+          "TotalTicket": {
+            "type": "integer"
+          },
+          "Sales": {
+            "type": "integer"
+          },
+          "Price": {
+            "type": "integer"
+          }
+        },
+        "title": "票房",
+        "x-apifox-orders": [
+          "PlayId",
+          "PlayName",
+          "PlayArea",
+          "PlayDuration",
+          "StartData",
+          "EndData",
+          "TotalTicket",
+          "Sales",
+          "Price"
+        ],
+        "required": [
+          "PlayId",
+          "PlayName",
+          "PlayArea",
+          "PlayDuration",
+          "StartData",
+          "EndData",
+          "TotalTicket",
+          "Sales",
+          "Price"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "order"
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "UserId": {
+            "type": "integer",
+            "description": "买票人"
+          },
+          "ScheduleId": {
+            "type": "integer"
+          },
+          "SeatRow": {
+            "type": "integer"
+          },
+          "SeatCol": {
+            "type": "integer"
+          },
+          "Date": {
+            "type": "string",
+            "description": "订单处理时间，2006-01-02 15:04:05"
+          },
+          "Value": {
+            "type": "integer",
+            "description": "票价"
+          },
+          "Type": {
+            "type": "integer",
+            "description": "交易类型，1-买票，-1-退票"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "UserId",
+          "ScheduleId",
+          "SeatRow",
+          "SeatCol",
+          "Date",
+          "Value",
+          "Type"
+        ],
+        "required": [
+          "Id",
+          "UserId",
+          "ScheduleId",
+          "SeatRow",
+          "SeatCol",
+          "Date",
+          "Value",
+          "Type"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "order"
+      },
+      "Ticket": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "ScheduleId": {
+            "type": "integer",
+            "description": "演出计划ID"
+          },
+          "SeatRow": {
+            "type": "integer",
+            "description": "座位行数"
+          },
+          "SeatCol": {
+            "type": "integer",
+            "description": "座位列数"
+          },
+          "Price": {
+            "type": "integer",
+            "description": "价格"
+          },
+          "PlayName": {
+            "type": "string"
+          },
+          "StudioId": {
+            "type": "integer"
+          },
+          "Status": {
+            "type": "integer",
+            "description": "0-待售（未被预定），1-已售（已付款），9-预留（已预订，还未付款）"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "ScheduleId",
+          "SeatRow",
+          "SeatCol",
+          "Price",
+          "PlayName",
+          "StudioId",
+          "Status"
+        ],
+        "required": [
+          "Id",
+          "ScheduleId",
+          "SeatRow",
+          "SeatCol",
+          "Price",
+          "Status",
+          "PlayName",
+          "StudioId"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "ticket"
+      },
+      "Schedule": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "description": "演出计划ID"
+          },
+          "PlayName": {
+            "type": "string"
+          },
+          "Area": {
+            "type": "string",
+            "description": "剧目出品地区"
+          },
+          "Rating": {
+            "type": "integer",
+            "description": "剧目等级 1-儿童 2-青年 3-成年"
+          },
+          "Duration": {
+            "type": "string",
+            "description": "时长 如：3h30m30s"
+          },
+          "ShowTime": {
+            "type": "string",
+            "description": "放映时间 示例：2006-01-02 15:04:05"
+          },
+          "Price": {
+            "type": "integer"
+          },
+          "StudioName": {
+            "type": "string",
+            "description": "演出厅名称"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "PlayName",
+          "Area",
+          "Rating",
+          "Duration",
+          "ShowTime",
+          "Price",
+          "StudioName"
+        ],
+        "required": [
+          "PlayName",
+          "Area",
+          "Rating",
+          "Id",
+          "Duration",
+          "ShowTime",
+          "Price",
+          "StudioName"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "schedule"
+      },
+      "Play": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Type": {
+            "type": "integer",
+            "description": "1-file 2-opear 3-音乐会"
+          },
+          "Area": {
+            "type": "string"
+          },
+          "Rating": {
+            "type": "integer",
+            "description": "剧目等级 1-儿童 2-青年 3-成年"
+          },
+          "Duration": {
+            "type": "string",
+            "description": "如：3h30m30s"
+          },
+          "StartData": {
+            "type": "string",
+            "description": "示例格式：2006-01-02"
+          },
+          "EndData": {
+            "type": "string",
+            "description": "示例格式：2006-01-02"
+          },
+          "Price": {
+            "type": "integer"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "Name",
+          "Type",
+          "Area",
+          "Rating",
+          "Duration",
+          "StartData",
+          "EndData",
+          "Price"
+        ],
+        "required": [
+          "Name",
+          "Type",
+          "Area",
+          "Rating",
+          "Duration",
+          "StartData",
+          "EndData",
+          "Price",
+          "Id"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "play"
+      },
+      "Seat": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "StudioId": {
+            "type": "integer"
+          },
+          "Row": {
+            "type": "integer"
+          },
+          "Col": {
+            "type": "integer"
+          },
+          "Status": {
+            "type": "integer",
+            "description": "0-不是座位，1-有座位，9-损坏的座位"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "StudioId",
+          "Row",
+          "Col",
+          "Status"
+        ],
+        "required": [
+          "Id",
+          "StudioId",
+          "Row",
+          "Col",
+          "Status"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "seat"
+      },
+      "Studio": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "RowsCount": {
+            "type": "integer"
+          },
+          "ColsCount": {
+            "type": "integer"
+          },
+          "SeatsCount": {
+            "type": "integer"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "Name",
+          "RowsCount",
+          "ColsCount",
+          "SeatsCount"
+        ],
+        "required": [
+          "Id",
+          "Name",
+          "RowsCount",
+          "ColsCount",
+          "SeatsCount"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "studio"
+      },
+      "BaseResp": {
+        "type": "object",
+        "properties": {
+          "StatusCode": {
+            "type": "integer",
+            "description": "0-成功"
+          },
+          "StatusMessage": {
+            "type": "string"
+          }
+        },
+        "x-apifox-orders": [
+          "StatusCode",
+          "StatusMessage"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer"
+          },
+          "Type": {
+            "type": "integer",
+            "description": "1-销售，2-经理，9-系统管理员"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "Password": {
+            "type": "string"
+          },
+          "Email": {
+            "type": "string",
+            "description": "电子邮件"
+          }
+        },
+        "x-apifox-orders": [
+          "Id",
+          "Type",
+          "Name",
+          "Password",
+          "Email"
+        ],
+        "required": [
+          "Id",
+          "Type",
+          "Name",
+          "Password",
+          "Email"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": "user"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "开发环境"
+    },
+    {
+      "url": "http://116.204.90.27:8080",
+      "description": "测试环境"
+    }
+  ]
+}

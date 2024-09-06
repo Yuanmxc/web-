@@ -1,0 +1,110 @@
+syntax = "proto3";
+package user;
+option go_package = "user";
+
+message BaseResp {
+  int64 StatusCode = 1;
+  string StatusMessage = 2;
+}
+
+message User{
+  int64 Id = 1;   //用户ID
+  int32 Type = 2; //用户类型，1-销售员，2-经理，9-系统管理员
+  string Name = 3; //用户名称
+  string Password = 4;  //用户密码
+  string Email = 5;//电子邮箱
+}
+//创建用户
+message CreateUserRequest{
+  int32 Type = 1; //用户类型，1-销售员，2-经理，9-系统管理员
+  string Name = 2; //用户名称
+  string Password = 3;  //用户密码
+  string Email = 4;
+  string Token = 5;
+}
+message CreateUserResponse {
+  BaseResp BaseResp = 1;
+  int64 UserId = 2;
+}
+//用户登录
+message UserLoginRequest{
+  int64 UserId = 1; //用户ID
+  string Password = 2;  //用户密码
+}
+message UserLoginResponse{
+  BaseResp BaseResp = 1;
+  string Token = 2;
+  optional user.User userInfo = 3;//user结构体
+}
+//分页获取用户信息
+message GetAllUserRequest{
+  int32 Current = 1;//当前页
+  int32 PageSize = 2; //一页数据条数
+}
+message GetAllUserResponseData{
+  int64 Total = 1;
+  repeated User List = 2;
+}
+message GetAllUserResponse{
+  BaseResp BaseResp = 1;
+  GetAllUserResponseData Data = 2;
+}
+//修改密码
+message ChangeUserPasswordRequest{
+  int64 UserId = 1;
+  string Password = 2;  //用户原密码
+  string NewPassword = 3;  //用户新密码
+}
+message ChangeUserPasswordResponse{
+  BaseResp BaseResp = 1;
+}
+//删除用户
+message DeleteUserRequest{
+  int64 UserId = 1; //要删除的用户ID
+}
+message DeleteUserResponse{
+  BaseResp BaseResp = 1;
+}
+//获取本用户信息
+message GetUserInfoRequest{
+  int64 UserId = 1;
+}
+message GetUserInfoResponse{
+  BaseResp BaseResp = 1;
+  User User = 2;
+}
+//绑定邮箱
+message BindEmailRequest{
+  string Email = 1;
+  string Verification = 2;//验证码
+  int64 UserId = 3;
+}
+message BindEmailResponse{
+  BaseResp BaseResp = 1;
+}
+//获取邮箱验证码
+message GetVerificationRequest{
+  string Email = 1;
+}
+message GetVerificationResponse{
+  BaseResp BaseResp = 1;
+}
+//通过邮箱验证码设置新密码(前提是已经绑定了邮箱)
+message ForgetPasswordRequest{
+  string Email = 1;
+  string Verification = 2;//验证码
+  string NewPassword = 3;
+}
+message ForgetPasswordResponse{
+  BaseResp BaseResp = 1;
+}
+service UserService{
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse){}
+  rpc UserLogin(UserLoginRequest) returns (UserLoginResponse){}
+  rpc GetAllUser(GetAllUserRequest) returns (GetAllUserResponse){}
+  rpc ChangeUserPassword(ChangeUserPasswordRequest) returns (ChangeUserPasswordResponse){}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse){}
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse){}
+  rpc BindEmail(BindEmailRequest) returns (BindEmailResponse){}
+  rpc ForgetPassword(ForgetPasswordRequest) returns (ForgetPasswordResponse){}
+}
